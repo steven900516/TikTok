@@ -24,11 +24,15 @@ public class RedisUtil {
      */
     public Object get(final String key) {
         if (StringUtils.isBlank(key)) {
+            log.info("redis_get_success，key：{} ， value：{}", key, null);
             return null;
         }
         try {
-            return redisTemplate.opsForValue().get(key);
+            Object o = redisTemplate.opsForValue().get(key);
+            log.info("redis_get_success，key：{} ， value：{}", key, o);
+            return o;
         } catch (Exception e) {
+            log.error("redis_get_fail，key：{} ， value：{}", key, null);
             e.printStackTrace();
         }
         return null;
@@ -43,10 +47,10 @@ public class RedisUtil {
         }
         try {
             redisTemplate.opsForValue().set(key, value);
-            log.info("存入redis成功，key：{}，value：{}", key, value);
+            log.info("redis_set_success，key：{} ， value：{}", key, value);
             return true;
         } catch (Exception e) {
-            log.error("存入redis失败，key：{}，value：{}", key, value);
+            log.error("redis_set_fail，key：{} ， value：{}", key, value);
             e.printStackTrace();
         }
         return false;

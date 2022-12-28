@@ -1,6 +1,6 @@
 package com.lin.user.constant;
 
-public class sevice {
+public class Service {
 
 
     public static final String Service_Name = "tt.user";
