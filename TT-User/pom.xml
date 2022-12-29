@@ -33,6 +33,22 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.lin</groupId>
+            <artifactId>TT-Common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.lin</groupId>
+            <artifactId>TT-Storage</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!--    nacos    -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -60,12 +76,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.lin</groupId>
-            <artifactId>TT-Common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>

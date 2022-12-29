@@ -12,17 +12,25 @@ public class RedisController {
     @Autowired
     RedisService redisService;
 
-    @PostMapping("/setKV")
-    public JsonResult setKV(@RequestParam("serviceName")String serviceName,
-                            @RequestParam("key")String key,@RequestParam("object")Object object){
-        return redisService.setRedisKV(serviceName, key, object);
+    @PostMapping("/setKVWithoutExpire")
+    public JsonResult setKVWithoutExpire(@RequestParam("serviceName")String serviceName,
+                            @RequestParam("key")String key,@RequestParam("object")Object object
+                                         ,@RequestParam("type")Integer type){
+        return redisService.setRedisKVWithoutExpire(serviceName, key, object,type);
+    }
+
+    @PostMapping("/setKVWithExpire")
+    public JsonResult setKVWithExpire(@RequestParam("serviceName")String serviceName,
+                            @RequestParam("key")String key,@RequestParam("object")Object object,@RequestParam("second")Long second
+                            ,@RequestParam("type")Integer type){
+        return redisService.setRedisKVWithExpire(serviceName, key, object,second,type);
     }
 
 
     @GetMapping("/getKV")
     public JsonResult setKV(@RequestParam("serviceName")String serviceName,
-                            @RequestParam("key")String key){
-        return redisService.getRedisObject(serviceName, key);
+                            @RequestParam("key")String key,@RequestParam("type")Integer type){
+        return redisService.getRedisObject(serviceName, key,type);
     }
 
 

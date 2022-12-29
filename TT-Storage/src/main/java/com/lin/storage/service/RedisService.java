@@ -5,10 +5,11 @@ import com.lin.common.result.JsonResult;
 
 public interface RedisService {
 
-    JsonResult  setRedisKV(String serviceName,String key,Object value);
+    JsonResult  setRedisKVWithoutExpire(String serviceName,String key,Object value,Integer type);
 
+    JsonResult  setRedisKVWithExpire(String serviceName,String key,Object value,Long second,Integer type);
 
-    JsonResult getRedisObject(String serviceName,String key);
+    JsonResult getRedisObject(String serviceName,String key,Integer type);
 
 
 }

@@ -23,6 +23,8 @@ public enum ResultCode {
 
     PARAMS_ERROR(10001, "参数有误"),
     ACCOUNT_PWD_NOT_EXIST(10002, "用户名或密码不存在"),
+
+
     TOKEN_ERROR(10003, "token不合法"),
     ACCOUNT_EXIST(10004, "账号已存在"),
     SESSION_TIME_OUT(90001, "会话超时"),
@@ -36,37 +38,16 @@ public enum ResultCode {
     USER_ACCOUNT_NOT_EXIST(4014, "账号不存在"),
     USER_ACCOUNT_ALREADY_EXIST(4015, "账号已存在"),
     USER_ACCOUNT_USE_BY_OTHERS(4016, "账号下线"),
-    INVITE_USER_PRODUCT_ERROR(4017, "邀请者用户Id或项目id有误，请检查"),
 
-    /* 邮件服务 */
-    MAIL_SEND_ERROR(6000, "邮件发送失败，请重试"),
-    MAIL_MESSAGE_ERROR(6001, "邮件消息生成失败"),
-    MAIL_PARAM_ERROR(6002, "邮件参数有误，请检查"),
-    MAIL_HTML_ERROR(6003, "读取html文件错误"),
-    MAIL_TEMPLATE_ERROR(6004, "freeMaker生成邮件模板错误"),
-    MAIL_CODE_ALREADY_SEND(6005, "已发送验证码至邮箱，稍后重试"),
-    MAIL_CODE_ERROR(6006, "验证码有误，请检查"),
 
-    /* 查询错误 */
-    NOT_FOUND(20010, "查询无果"),
 
-    /* 标签错误 */
-    TAG_CONSIST(21000, "标签已存在"),
+    /* 用户信息更改错误 */
+    USER_DETAIL_NAME_HAS_CHANGED(30000,"名字在一个月内已修改过，无法修改"),
 
-    TAG_ID_NOT_CONSIST(21005, "tagId有误，请检查"),
 
-    /* 卡片错误 */
-    CARD_CONSIST(21000, "卡片已存在"),
-    CARD_ID_NOT_CONSIST(21005, "cardId有误，请检查"),
+    /* Redis错误 */
+    REDIS_TYPE_ERROR(40001,"redis请求类型type错误");
 
-    /* 项目错误 */
-    PRODUCT_CONSIST(21000, "项目名称已存在，请更改"),
-    PRODUCT_NOT_CONSIST(22000, "项目不存在，检查productId"),
-    PRODUCT_PARAM_ERROR(23000, "项目参数有误，请检查"),
-    PRODUCT_NOT_PERMISSION(70000, "用户没有该项目的权限"),
-
-    /* 业务错误 */
-    NO_PERMISSION(70001, "没有权限");
 
     private Integer code;
     private String message;
