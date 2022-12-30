@@ -33,7 +33,7 @@ public class UserCommonServiceImpl implements UserCommonService {
     @Override
     public JsonResult registInitCommonParam() {
         long uid = IdGen.genUID();
-        long did = IdGen.genUID();
+        long did = IdGen.genDID();
         String ttAccount = IdGen.getUUID();
 
         UserCommon userCommon = new UserCommon();
@@ -66,6 +66,6 @@ public class UserCommonServiceImpl implements UserCommonService {
             log.error("regist_user_detail_fail: key = {} , user = {}",userKey,user);
             return registJson;
         }
-        return ResultTool.success();
+        return ResultTool.success(userCommon);
     }
 }
