@@ -43,6 +43,8 @@ public enum ResultCode {
 
     /* 用户信息更改错误 */
     USER_DETAIL_NAME_HAS_CHANGED(30000,"名字在一个月内已修改过，无法修改"),
+    USER_DETAIL_TTACOUNT_HAS_CHANGED(30001,"抖音号在180天内已更改，无法在此期间做更改"),
+    USER_DETAIL_TTACOUNT_EXITST(30002,"抖音号已存在，请更换另一个抖音号"),
 
 
     /* Redis错误 */

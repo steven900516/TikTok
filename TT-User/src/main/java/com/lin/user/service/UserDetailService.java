@@ -6,7 +6,7 @@ import com.lin.user.entity.School;
 
 import java.time.LocalDate;
 
-public interface UserService {
+public interface UserDetailService {
 
     JsonResult getUserDetail(String token,String uid,String did);
 
@@ -29,6 +29,6 @@ public interface UserService {
     JsonResult setUserDetailSchool(String token, String uid, String did, School school);
 
 
-    JsonResult setTtAccount(String token, String uid, String did, String newTtAccount);
+    JsonResult setUserDetailTTAccount(String token, String uid, String did, String newTtAccount);
 
 }

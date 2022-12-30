@@ -17,7 +17,7 @@ public class IdGen {
      *
      * @return a new id.
      */
-    public static synchronized long nextId() {
+    public static synchronized long genUID() {
         long now = System.currentTimeMillis();
         if (counter == -1) {
             long seed = now ^ Thread.currentThread().getId();
@@ -28,6 +28,17 @@ public class IdGen {
         counter = (counter + 1) % SHORT_MAX;
         return id;
     }
+
+
+
+
+    public static Integer genDID(){
+        Integer orderId=UUID.randomUUID().toString().hashCode();
+        orderId = orderId < 0 ? -orderId : orderId; //String.hashCode() 值会为空
+        return orderId;
+    }
+
+
 
     /**
      * generate uniq uuid
