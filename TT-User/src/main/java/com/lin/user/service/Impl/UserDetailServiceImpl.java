@@ -38,6 +38,7 @@ public class UserDetailServiceImpl implements UserDetailService {
         // 成功查询
         if (ConvertData.isResultIllegal(jsonResult)){
             // 若查询用户Detail 信息为空，则创建新对象返回
+            log.info("getUserDetail_success , uid = {}",uid);
             if (jsonResult.getData() == null){
                 return ResultTool.success(new UserDetail());
             }

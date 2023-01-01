@@ -36,6 +36,6 @@ public class ConvertData {
     }
 
     public static boolean isResultIllegal(JsonResult jsonResult){
-        return !jsonResult.getSuccess();
+        return jsonResult.getSuccess();
     }
 }

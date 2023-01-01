@@ -66,6 +66,7 @@ public class UserCommonServiceImpl implements UserCommonService {
             log.error("regist_user_detail_fail: key = {} , user = {}",userKey,user);
             return registJson;
         }
+        log.info("uid = {} regist success",uid);
         return ResultTool.success(userCommon);
     }
 }

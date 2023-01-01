@@ -23,7 +23,7 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public JsonResult setRedisKVWithoutExpire(String serviceName, String key, Object value,Integer type) {
-        if (type != KeyType.Record_Int_type || type != KeyType.Storage_Int_type){
+        if (type != KeyType.Record_Int_type && type != KeyType.Storage_Int_type){
             return ResultTool.fail(ResultCode.REDIS_TYPE_ERROR);
         }
         String newKey = StringUtil.CombineKey(serviceName, key,type);
