@@ -12,15 +12,19 @@ import java.time.LocalDate;
 
 @FeignClient("tt-user-service")
 public interface UserService {
-
-
-
-    @GetMapping("/tiktok/api/user/userDetail/getUserDetail")
-    public JsonResult getUserDetail(@RequestParam("token")String token, @RequestParam("uid")String uid, @RequestParam("did")String did);
-
-
+    /*
+        UserCommon 初始化  注册
+     */
     @PostMapping("/tiktok/api/user/userCommon/registInitParam")
     public JsonResult registInitParam();
+
+
+
+    /*
+        UserDetail 相关设置接口
+     */
+    @GetMapping("/tiktok/api/user/userDetail/getUserDetail")
+    public JsonResult getUserDetail(@RequestParam("token")String token, @RequestParam("uid")String uid, @RequestParam("did")String did);
 
 
     @PostMapping("/tiktok/api/user/userDetail/setUserDetailName")
@@ -44,7 +48,7 @@ public interface UserService {
 
     @PostMapping("/tiktok/api/user/userDetail/setUserDetailLocate")
     public JsonResult setUserDetailLocate(@RequestParam("token")String token, @RequestParam("uid")String uid,
-                                          @RequestParam("did")String did,@RequestParam("newLocate") LocalDate newLocate);
+                                          @RequestParam("did")String did,@RequestParam("newLocate") String newLocate);
 
     @PostMapping("/tiktok/api/user/userDetail/setUserDetailSchool")
     public JsonResult setUserDetailSchool(@RequestParam("token")String token, @RequestParam("uid")String uid,
@@ -53,5 +57,5 @@ public interface UserService {
 
     @PostMapping("/setUserDetailTTAccount")
     public JsonResult setUserDetailTTAccount(@RequestParam("token")String token, @RequestParam("uid")String uid,
-                                             @RequestParam("did")String did,@RequestParam("newTTAcount") String newTTAcount);
+                                             @RequestParam("did")String did,@RequestParam("newTTAccount") String newTTAccount);
 }

@@ -51,8 +51,8 @@ public class UserDetailController {
 
     @PostMapping("/setUserDetailLocate")
     public JsonResult setUserDetailLocate(@RequestParam("token")String token, @RequestParam("uid")String uid,
-                                         @RequestParam("did")String did,@RequestParam("newLocate") LocalDate newLocate){
-        return userDetailService.setUserDetailBirth(token, uid, did,newLocate);
+                                         @RequestParam("did")String did,@RequestParam("newLocate") String newLocate){
+        return userDetailService.setUserDetailLocate(token, uid, did,newLocate);
     }
 
     @PostMapping("/setUserDetailSchool")
@@ -63,7 +63,7 @@ public class UserDetailController {
 
     @PostMapping("/setUserDetailTTAccount")
     public JsonResult setUserDetailTTAccount(@RequestParam("token")String token, @RequestParam("uid")String uid,
-                                          @RequestParam("did")String did,@RequestParam("newTTAcount") String newTTAcount){
-        return userDetailService.setUserDetailTTAccount(token, uid, did,newTTAcount);
+                                          @RequestParam("did")String did,@RequestParam("newTTAccount") String newTTAccount){
+        return userDetailService.setUserDetailTTAccount(token, uid, did,newTTAccount);
     }
 }

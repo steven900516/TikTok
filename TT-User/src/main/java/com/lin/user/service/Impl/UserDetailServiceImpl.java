@@ -1,5 +1,8 @@
 package com.lin.user.service.Impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.lin.common.result.JsonResult;
 import com.lin.common.result.ResultCode;
 import com.lin.common.result.ResultTool;
@@ -10,9 +13,12 @@ import com.lin.user.entity.UserDetail;
 import com.lin.user.interfaces.RedisService;
 import com.lin.user.service.UserDetailService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import static com.lin.user.util.Key.generateKey;
 import static com.lin.user.util.Key.isValidToken;
 
@@ -60,7 +66,7 @@ public class UserDetailServiceImpl implements UserDetailService {
 
         // 检验是否30天内修改1次,record:3787398274UserDetail-Name
         String recordKey = generateKey(uid,com.lin.user.constant.Service.User_Detail_Record_Name_Key);
-        if (redisService.getKV(com.lin.user.constant.Service.Service_Name,recordKey,KeyType.Record_Int_type) != null) {
+        if (redisService.getKV(com.lin.user.constant.Service.Service_Name,recordKey,KeyType.Record_Int_type).getData() != null) {
             return ResultTool.fail(ResultCode.USER_DETAIL_NAME_HAS_CHANGED);
         }
 
@@ -200,8 +206,18 @@ public class UserDetailServiceImpl implements UserDetailService {
         String key = generateKey(uid , com.lin.user.constant.Service.User_Detail_Storage_Key);
 
         JsonResult jsonResult = redisService.getKV(com.lin.user.constant.Service.Service_Name, key, KeyType.Storage_Int_type);
-        UserDetail userDetail = (UserDetail)ConvertData.ConvertDataIntoObj(jsonResult, UserDetail.class);
-
+        UserDetail userDetail = (UserDetail) jsonResult.getData();
+        
+//        JSONObject jsonObject = JSON.parseObject(stringObj);
+//        userDetail.setName(jsonObject.getString("name"));
+//        userDetail.setUserImage(jsonObject.getBytes("userImage"));
+//        userDetail.setLocate(jsonObject.getString("locate"));
+//        userDetail.setBirth(LocalDate.parse(jsonObject.getString("birth"), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+//        userDetail.setGender(jsonObject.getString("gender"));
+//        userDetail.setIntroduction(jsonObject.getString("introduction"));
+//        userDetail.setTtAccount(jsonObject.getString("ttAccount"));
+//        userDetail.setSchoolInfo(jsonObject.getObject("schoolInfo",new TypeReference<School>() {}));
+        System.out.println(userDetail);
         log.info("getUserDetail,key = {},jsonResult = {},userDetail:{}",key,jsonResult,userDetail);
         return userDetail == null ? new UserDetail() : userDetail;
     }

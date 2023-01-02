@@ -20,9 +20,7 @@ public enum ResultCode {
     PARAM_IS_BLANK(1002, "参数为空"),
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
-
     PARAMS_ERROR(10001, "参数有误"),
-    ACCOUNT_PWD_NOT_EXIST(10002, "用户名或密码不存在"),
 
 
     TOKEN_ERROR(10003, "token不合法"),
