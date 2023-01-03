@@ -11,5 +11,5 @@ public interface RedisService {
 
     JsonResult getRedisObject(String serviceName,String key,Integer type);
 
-
+    JsonResult deleteRedisKey(String serviceName,String key,Integer type);
 }

@@ -7,6 +7,7 @@ import com.lin.user.service.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 @RestController
@@ -17,7 +18,7 @@ public class UserDetailController {
     private UserDetailService userDetailService;
 
     @GetMapping("/getUserDetail")
-    public JsonResult getUserDetail(@RequestParam("token")String token, @RequestParam("uid")String uid,@RequestParam("did")String did){
+    public JsonResult getUserDetail(@RequestParam("token")String token, @RequestParam("uid")String uid,@RequestParam("did")String did) throws IOException, ClassNotFoundException {
         return userDetailService.getUserDetail(token, uid, did);
     }
 
@@ -39,7 +40,7 @@ public class UserDetailController {
     @PostMapping("/setUserDetailGender")
     public JsonResult setUserDetailGender(@RequestParam("token")String token, @RequestParam("uid")String uid,
                                           @RequestParam("did")String did,@RequestParam("newGender")String newGender){
-        return userDetailService.setUserDetailIntroduction(token, uid, did,newGender);
+        return userDetailService.setUserDetailGender(token, uid, did,newGender);
     }
 
     @PostMapping("/setUserDetailBirth")
@@ -55,10 +56,11 @@ public class UserDetailController {
         return userDetailService.setUserDetailLocate(token, uid, did,newLocate);
     }
 
-    @PostMapping("/setUserDetailSchool")
+    @ResponseBody
+    @PostMapping(value = "/setUserDetailSchool",produces = "application/json")
     public JsonResult setUserDetailSchool(@RequestParam("token")String token, @RequestParam("uid")String uid,
-                                          @RequestParam("did")String did,@RequestParam("newSchool") School newSchool){
-        return userDetailService.setUserDetailSchool(token, uid, did,newSchool);
+                                          @RequestParam("did")String did,@RequestBody School school){
+        return userDetailService.setUserDetailSchool(token, uid, did,school);
     }
 
     @PostMapping("/setUserDetailTTAccount")

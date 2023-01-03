@@ -14,6 +14,8 @@ public class Service {
 
     public static final String User_Common_Storage_Key = "UserCommon";
 
+    public static final String TtAccount_Value_Record_Key = "ttAccount";
+
 
     public static final String User_Key = "User";
 

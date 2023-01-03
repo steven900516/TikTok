@@ -1,4 +1,4 @@
-package com.lin.user.util;
+package com.lin.common.util;
 
 import java.io.*;
 
@@ -13,7 +13,8 @@ public class SerializeUtils {
         byteArrayOutputStream.close();
         return string;
     }
-    public static Object serializeToObject(String str) throws IOException, ClassNotFoundException {
+    public static Object serializeToObject(Object obj) throws IOException, ClassNotFoundException {
+        String str = (String)obj;
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(str.getBytes("ISO-8859-1"));
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
         Object object = objectInputStream.readObject();

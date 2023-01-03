@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/userCommon")
 public class UserCommonController {
@@ -16,7 +18,7 @@ public class UserCommonController {
     UserCommonService userCommonService;
 
     @PostMapping("/registInitParam")
-    public JsonResult registInitParam(){
+    public JsonResult registInitParam() throws IOException {
         return userCommonService.registInitCommonParam();
     }
 }

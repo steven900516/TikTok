@@ -3,6 +3,7 @@ package com.lin.storage.service.impl;
 import com.lin.common.result.JsonResult;
 import com.lin.common.result.ResultCode;
 import com.lin.common.result.ResultTool;
+import com.lin.common.util.SerializeUtils;
 import com.lin.storage.constant.KeyType;
 import com.lin.storage.service.RedisService;
 import com.lin.storage.util.RedisUtil;
@@ -23,7 +24,7 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public JsonResult setRedisKVWithoutExpire(String serviceName, String key, Object value,Integer type) {
-        if (type != KeyType.Record_Int_type && type != KeyType.Storage_Int_type){
+        if (!type.equals(KeyType.Record_Int_type) && !type.equals(KeyType.Storage_Int_type)){
             return ResultTool.fail(ResultCode.REDIS_TYPE_ERROR);
         }
         String newKey = StringUtil.CombineKey(serviceName, key,type);
@@ -43,7 +44,7 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public JsonResult setRedisKVWithExpire(String serviceName, String key, Object value,Long second,Integer type) {
-        if (type != KeyType.Record_Int_type || type != KeyType.Storage_Int_type){
+        if (!type.equals(KeyType.Record_Int_type) && !type.equals(KeyType.Storage_Int_type)){
             return ResultTool.fail(ResultCode.REDIS_TYPE_ERROR);
         }
         String newKey = StringUtil.CombineKey(serviceName, key,type);
@@ -73,5 +74,22 @@ public class RedisServiceImpl implements RedisService {
         }
 
         return ResultTool.success(obj);
+    }
+
+    @Override
+    public JsonResult deleteRedisKey(String serviceName, String key, Integer type) {
+        String newKey;
+        Object obj;
+        try {
+            newKey = StringUtil.CombineKey(serviceName,key,type);
+            boolean del = redisUtil.del(newKey);
+            if (del) {
+                return ResultTool.success();
+            }
+            return ResultTool.fail();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultTool.fail();
+        }
     }
 }

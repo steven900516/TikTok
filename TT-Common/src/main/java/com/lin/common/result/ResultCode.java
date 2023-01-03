@@ -44,6 +44,8 @@ public enum ResultCode {
     USER_DETAIL_TTACOUNT_HAS_CHANGED(30001,"抖音号在180天内已更改，无法在此期间做更改"),
     USER_DETAIL_TTACOUNT_EXITST(30002,"抖音号已存在，请更换另一个抖音号"),
 
+    USER_DETAIL_IS_NULL(3003,"查找不到用户详情信息，请再试一遍"),
+
 
     /* Redis错误 */
     REDIS_TYPE_ERROR(40001,"redis请求类型type错误");

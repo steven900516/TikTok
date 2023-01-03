@@ -20,4 +20,6 @@ public interface RedisService {
     @GetMapping("/tiktok/api/storage/redis/getKV")
     public JsonResult getKV(@RequestParam("serviceName")String serviceName, @RequestParam("key")String key,@RequestParam("type")Integer type);
 
+    @PostMapping("/tiktok/api/storage/redis/deleteKV")
+    public JsonResult deleteKV(@RequestParam("serviceName")String serviceName, @RequestParam("key")String key,@RequestParam("type")Integer type);
 }

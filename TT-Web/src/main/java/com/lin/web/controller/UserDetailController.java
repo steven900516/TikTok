@@ -89,6 +89,7 @@ public class UserDetailController {
                                           @RequestHeader(required = true,value = "uid")String uid,
                                           @RequestHeader(required = false,value = "did")String did,
                                           @RequestBody School school){
+        System.out.println(school);
         return userService.setUserDetailSchool(token, uid, did,school);
     }
 
