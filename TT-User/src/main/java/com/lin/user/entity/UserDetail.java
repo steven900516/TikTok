@@ -3,10 +3,11 @@ package com.lin.user.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
-public class UserDetail {
+public class UserDetail implements Serializable {
 
     private byte[] userImage;
 

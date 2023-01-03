@@ -20,9 +20,7 @@ public enum ResultCode {
     PARAM_IS_BLANK(1002, "参数为空"),
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
-
     PARAMS_ERROR(10001, "参数有误"),
-    ACCOUNT_PWD_NOT_EXIST(10002, "用户名或密码不存在"),
 
 
     TOKEN_ERROR(10003, "token不合法"),
@@ -45,6 +43,8 @@ public enum ResultCode {
     USER_DETAIL_NAME_HAS_CHANGED(30000,"名字在一个月内已修改过，无法修改"),
     USER_DETAIL_TTACOUNT_HAS_CHANGED(30001,"抖音号在180天内已更改，无法在此期间做更改"),
     USER_DETAIL_TTACOUNT_EXITST(30002,"抖音号已存在，请更换另一个抖音号"),
+
+    USER_DETAIL_IS_NULL(3003,"查找不到用户详情信息，请再试一遍"),
 
 
     /* Redis错误 */

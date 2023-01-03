@@ -1,18 +1,27 @@
 package com.lin.user.service.Impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.lin.common.result.JsonResult;
 import com.lin.common.result.ResultCode;
 import com.lin.common.result.ResultTool;
 import com.lin.common.util.ConvertData;
+import com.lin.common.util.SerializeUtils;
 import com.lin.storage.constant.KeyType;
 import com.lin.user.entity.School;
 import com.lin.user.entity.UserDetail;
 import com.lin.user.interfaces.RedisService;
 import com.lin.user.service.UserDetailService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import static com.lin.user.util.Key.generateKey;
 import static com.lin.user.util.Key.isValidToken;
 
@@ -33,21 +42,15 @@ public class UserDetailServiceImpl implements UserDetailService {
         }
 
         // 2. 去Redis存储服务拿信息 3787398274UserDetail
-        String key = generateKey(uid,com.lin.user.constant.Service.User_Detail_Storage_Key);
-        JsonResult jsonResult = redisService.getKV(com.lin.user.constant.Service.Service_Name, key, KeyType.Storage_Int_type);
+        UserDetail userDetail = getUserDetail(uid);
         // 成功查询
-        if (ConvertData.isResultIllegal(jsonResult)){
-            // 若查询用户Detail 信息为空，则创建新对象返回
-            log.info("getUserDetail_success , uid = {}",uid);
-            if (jsonResult.getData() == null){
-                return ResultTool.success(new UserDetail());
-            }
-            return jsonResult;
+        if (userDetail != null){
+            return ResultTool.success(userDetail);
         }
 
 
         // 3. 查询Redis 有问题，进行兜底
-        log.error(jsonResult.getmessage() + ", code : {} ",jsonResult.getcode());
+        log.error("user = {} ,userDetail is null",uid);
         return ResultTool.success(new UserDetail());
     }
 
@@ -60,32 +63,37 @@ public class UserDetailServiceImpl implements UserDetailService {
 
         // 检验是否30天内修改1次,record:3787398274UserDetail-Name
         String recordKey = generateKey(uid,com.lin.user.constant.Service.User_Detail_Record_Name_Key);
-        if (redisService.getKV(com.lin.user.constant.Service.Service_Name,recordKey,KeyType.Record_Int_type) != null) {
+        if (redisService.getKV(com.lin.user.constant.Service.Service_Name,recordKey,KeyType.Record_Int_type).getData() != null) {
             return ResultTool.fail(ResultCode.USER_DETAIL_NAME_HAS_CHANGED);
         }
 
         String storageKey = generateKey(uid,com.lin.user.constant.Service.User_Detail_Storage_Key);
         UserDetail userDetail = getUserDetail(uid);
+        if (userDetail == null){
+            log.error("user = {} ,userDetail is null",uid);
+            return ResultTool.fail(ResultCode.USER_DETAIL_IS_NULL);
+        }
         userDetail.setName(newName);
         // 设置一个月有效期
         JsonResult recordResult = redisService.setKVWithExpire(com.lin.user.constant.Service.Service_Name, recordKey, "1", 2592000L, KeyType.Record_Int_type);
-        JsonResult storageResult = redisService.setKVWithoutExpire(com.lin.user.constant.Service.Service_Name, storageKey, userDetail, KeyType.Storage_Int_type);
-        if (ConvertData.isResultIllegal(recordResult) && ConvertData.isResultIllegal(storageResult)){
-            log.info("storageKey: {}, recordKey : {} . set_user_detail_name both success  , newName : {}",storageKey,recordKey, newName);
-            return recordResult;
-        }else{
-            if (!ConvertData.isResultIllegal(recordResult)){
-                log.error("recordKey: {} set_user_detail_record_name fail,newName : {}",recordKey,newName);
-                return recordResult;
-            }
-
-            if (!ConvertData.isResultIllegal(storageResult)){
-                log.error("storageKey: {} set_user_detail_storage_name fail,newName : {}",storageKey,newName);
-                return storageResult;
-            }
+        if (!ConvertData.isResultIllegal(recordResult)){
+            log.error("recordKey: {} set_user_detail_record_name fail,newName : {}",recordKey,newName);
             return recordResult;
         }
+        JsonResult storageResult = null;
+        try {
+            storageResult = redisService.setKVWithoutExpire(com.lin.user.constant.Service.Service_Name, storageKey, SerializeUtils.serialize(userDetail), KeyType.Storage_Int_type);
+        }catch (Exception e){
+            log.error("setUserDetailName_serialize_fail",e);
+            return ResultTool.fail();
+        }
 
+        if (!ConvertData.isResultIllegal(storageResult)){
+            log.error("set_user_detail_storage_name fail,storageKey={},newName={}",storageKey,newName);
+            return storageResult;
+        }
+        log.info("set_user_detail_name both success, storageKey={}, recordKey={}, newName={}",storageKey,recordKey, newName);
+        return recordResult;
     }
 
     @Override
@@ -96,6 +104,10 @@ public class UserDetailServiceImpl implements UserDetailService {
         }
 
         UserDetail userDetail = getUserDetail(uid);
+        if (userDetail == null){
+            log.error("user = {} ,userDetail is null",uid);
+            return ResultTool.fail(ResultCode.USER_DETAIL_IS_NULL);
+        }
         userDetail.setIntroduction(newIntroduction);
 
         return setUserDetail(userDetail,uid);
@@ -108,6 +120,10 @@ public class UserDetailServiceImpl implements UserDetailService {
             return ResultTool.fail(ResultCode.TOKEN_ERROR);
         }
         UserDetail userDetail = getUserDetail(uid);
+        if (userDetail == null){
+            log.error("user = {} ,userDetail is null",uid);
+            return ResultTool.fail(ResultCode.USER_DETAIL_IS_NULL);
+        }
         userDetail.setGender(newGender);
 
         return setUserDetail(userDetail,uid);
@@ -121,6 +137,10 @@ public class UserDetailServiceImpl implements UserDetailService {
         }
 
         UserDetail userDetail = getUserDetail(uid);
+        if (userDetail == null){
+            log.error("user = {} ,userDetail is null",uid);
+            return ResultTool.fail(ResultCode.USER_DETAIL_IS_NULL);
+        }
         userDetail.setBirth(newDate);
 
         return setUserDetail(userDetail,uid);
@@ -134,6 +154,10 @@ public class UserDetailServiceImpl implements UserDetailService {
         }
 
         UserDetail userDetail = getUserDetail(uid);
+        if (userDetail == null){
+            log.error("user = {} ,userDetail is null",uid);
+            return ResultTool.fail(ResultCode.USER_DETAIL_IS_NULL);
+        }
         userDetail.setLocate(locate);
 
         return setUserDetail(userDetail,uid);
@@ -147,6 +171,10 @@ public class UserDetailServiceImpl implements UserDetailService {
         }
 
         UserDetail userDetail = getUserDetail(uid);
+        if (userDetail == null){
+            log.error("user = {} ,userDetail is null",uid);
+            return ResultTool.fail(ResultCode.USER_DETAIL_IS_NULL);
+        }
         userDetail.setSchoolInfo(school);
 
         return setUserDetail(userDetail,uid);
@@ -160,37 +188,52 @@ public class UserDetailServiceImpl implements UserDetailService {
         }
         // 记录存在
         String recordKey = generateKey(uid, com.lin.user.constant.Service.User_Detail_Record_ttAcount_Key);
-        if (redisService.getKV(com.lin.user.constant.Service.Service_Name,recordKey,KeyType.Record_Int_type) != null){
+        if (redisService.getKV(com.lin.user.constant.Service.Service_Name,recordKey,KeyType.Record_Int_type).getData() != null){
+            log.error("ttAccount has changed in 180 days,uid = {}",uid);
             return ResultTool.fail(ResultCode.USER_DETAIL_TTACOUNT_HAS_CHANGED);
         }
         // 抖音号存在
-        String storageKey = generateKey(uid, com.lin.user.constant.Service.User_Detail_Storage_Key);
-        if (redisService.getKV(com.lin.user.constant.Service.Service_Name,storageKey,KeyType.Storage_Int_type) != null){
+        String storageKey = generateKey(newTtAccount, com.lin.user.constant.Service.TtAccount_Value_Record_Key);
+        if (redisService.getKV(com.lin.user.constant.Service.Service_Name,storageKey,KeyType.Record_Int_type).getData() != null){
+            log.error("USER_DETAIL_TTACOUNT_EXITST,uid = {},newTTAccount = {}",uid,newTtAccount);
             return ResultTool.fail(ResultCode.USER_DETAIL_TTACOUNT_EXITST);
         }
 
         UserDetail userDetail = getUserDetail(uid);
-        userDetail.setTtAccount(newTtAccount);
+        if (userDetail == null){
+            log.error("user = {} ,userDetail is null",uid);
+            return ResultTool.fail(ResultCode.USER_DETAIL_IS_NULL);
+        }
 
+        String oldStorageKey = generateKey(userDetail.getTtAccount(), com.lin.user.constant.Service.TtAccount_Value_Record_Key);
+        JsonResult oldTtAccountJson = redisService.deleteKV(com.lin.user.constant.Service.Service_Name, oldStorageKey, KeyType.Record_Int_type);
+        if (!ConvertData.isResultIllegal(oldTtAccountJson)){
+            log.error("delete_user_detail_storage_tt_Account fail,storageKey={},newAccount={}",storageKey,newTtAccount);
+            return oldTtAccountJson;
+        }
+
+        JsonResult setNewAccountRecordJson = redisService.setKVWithoutExpire(com.lin.user.constant.Service.Service_Name, storageKey, "1", KeyType.Record_Int_type);
+        if (!ConvertData.isResultIllegal(setNewAccountRecordJson)){
+            log.error("set_user_detail_storage_new_tt_Account fail,storageKey={},newAccount={}",storageKey,newTtAccount);
+            return oldTtAccountJson;
+        }
+
+        userDetail.setTtAccount(newTtAccount);
         // 半年修改一次 180天
         JsonResult storageResult = setUserDetail(userDetail, uid);
+        if (!ConvertData.isResultIllegal(storageResult)){
+            log.error("storageKey: {} set_user_detail_storage_tt_Account fail,newAccount : {}",storageKey,newTtAccount);
+            return storageResult;
+        }
         JsonResult recordResult = redisService.setKVWithExpire(com.lin.user.constant.Service.Service_Name, recordKey, "1", 15552000L, KeyType.Record_Int_type);
-
-        if (ConvertData.isResultIllegal(recordResult) && ConvertData.isResultIllegal(storageResult)){
-            log.info("storageKey: {}, recordKey : {} . set_user_detail_tt_Account both success  , newAccount : {}",storageKey,recordKey, newTtAccount);
-            return recordResult;
-        }else{
-            if (!ConvertData.isResultIllegal(recordResult)){
-                log.error("recordKey: {} set_user_detail_record_tt_Account fail,newAccount : {}",recordKey,newTtAccount);
-                return recordResult;
-            }
-
-            if (!ConvertData.isResultIllegal(storageResult)){
-                log.error("storageKey: {} set_user_detail_storage_tt_Account fail,newAccount : {}",storageKey,newTtAccount);
-                return storageResult;
-            }
+        if (!ConvertData.isResultIllegal(recordResult)){
+            log.error("recordKey: {} set_user_detail_record_tt_Account fail,newAccount : {}",recordKey,newTtAccount);
             return recordResult;
         }
+
+
+        log.info("storageKey: {}, recordKey : {} . set_user_detail_tt_Account both success  , newAccount : {}",storageKey,recordKey, newTtAccount);
+        return recordResult;
     }
 
 
@@ -198,24 +241,36 @@ public class UserDetailServiceImpl implements UserDetailService {
 
     private UserDetail getUserDetail(String uid){
         String key = generateKey(uid , com.lin.user.constant.Service.User_Detail_Storage_Key);
-
+        UserDetail userDetail = null;
         JsonResult jsonResult = redisService.getKV(com.lin.user.constant.Service.Service_Name, key, KeyType.Storage_Int_type);
-        UserDetail userDetail = (UserDetail)ConvertData.ConvertDataIntoObj(jsonResult, UserDetail.class);
 
+        try {
+            userDetail = (UserDetail) SerializeUtils.serializeToObject(jsonResult.getData());
+        }catch (Exception e){
+            log.error("UserDetail_unserialize_fail,uid={}",uid);
+            return null;
+        }
         log.info("getUserDetail,key = {},jsonResult = {},userDetail:{}",key,jsonResult,userDetail);
         return userDetail == null ? new UserDetail() : userDetail;
     }
 
 
     private JsonResult setUserDetail(UserDetail userDetail,String uid){
-        String key = generateKey(uid , com.lin.user.constant.Service.User_Detail_Storage_Key);
-        JsonResult res = redisService.setKVWithoutExpire(com.lin.user.constant.Service.Service_Name, key, userDetail, KeyType.Storage_Int_type);
-        if (!ConvertData.isResultIllegal(res)){
-            log.error("setUserDetail_fail,key = {},uid={},userDetail={}",key,uid,userDetail);
-            return res;
+        JsonResult res = null;
+        try {
+            String key = generateKey(uid , com.lin.user.constant.Service.User_Detail_Storage_Key);
+            res = redisService.setKVWithoutExpire(com.lin.user.constant.Service.Service_Name, key, SerializeUtils.serialize(userDetail), KeyType.Storage_Int_type);
+            if (!ConvertData.isResultIllegal(res)){
+                log.error("setUserDetail_fail,key = {},uid={},userDetail={}",key,uid,userDetail);
+                return res;
+            }
+        } catch (Exception e){
+            log.error("setUserDetail_fail,uid={},userDetail={}",uid,userDetail);
+            return ResultTool.fail(ResultCode.USER_DETAIL_IS_NULL);
         }
 
-        log.info("setUserDetail_success ,key = {},uid={},userDetail={}",key,uid,userDetail);
+
+        log.info("setUserDetail_success ,uid={},userDetail={}",uid,userDetail);
         return res;
     }
 

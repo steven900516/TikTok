@@ -4,11 +4,12 @@ package com.lin.user.service;
 import com.lin.common.result.JsonResult;
 import com.lin.user.entity.School;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 public interface UserDetailService {
 
-    JsonResult getUserDetail(String token,String uid,String did);
+    JsonResult getUserDetail (String token,String uid,String did);
 
 
     JsonResult setUserDetailName(String token,String uid,String did,String newName);

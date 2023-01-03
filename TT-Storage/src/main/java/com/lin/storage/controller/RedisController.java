@@ -34,7 +34,11 @@ public class RedisController {
     }
 
 
-
+    @PostMapping("/deleteKV")
+    public JsonResult deleteKV(@RequestParam("serviceName")String serviceName,
+                            @RequestParam("key")String key,@RequestParam("type")Integer type){
+        return redisService.deleteRedisKey(serviceName, key,type);
+    }
 
 
 }
