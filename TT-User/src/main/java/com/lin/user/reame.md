@@ -28,8 +28,11 @@
 
 * Redis 修改记录存储
   * 抖音号修改记录（180天可修改一次）
-    * key : ` [tt.user]-[record]-uid-UserDetail-ttAcount`
+    * key : ` [tt.user]-[record]-{{uid}}-UserDetail-ttAcount`
     * value :  "1"
   * 姓名修改记录 （30天可修改一次）
-    * key : ` [tt.user]-[record]-uid-UserDetail-name`
+    * key : ` [tt.user]-[record]-{{uid}}-UserDetail-name`
+    * value :  "1"
+  * 抖音号检验是否存在
+    * key ： ` [tt.user]-[record]-{{ttAcount}}-ttAccount`
     * value :  "1"

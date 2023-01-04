@@ -10,6 +10,7 @@ import com.lin.common.util.ConvertData;
 import com.lin.common.util.SerializeUtils;
 import com.lin.storage.constant.KeyType;
 import com.lin.user.entity.School;
+import com.lin.user.entity.UserCommon;
 import com.lin.user.entity.UserDetail;
 import com.lin.user.interfaces.RedisService;
 import com.lin.user.service.UserDetailService;
@@ -225,6 +226,13 @@ public class UserDetailServiceImpl implements UserDetailService {
             log.error("storageKey: {} set_user_detail_storage_tt_Account fail,newAccount : {}",storageKey,newTtAccount);
             return storageResult;
         }
+
+        JsonResult userCommonResult = setUserCommon(uid,newTtAccount);
+        if (!ConvertData.isResultIllegal(userCommonResult)){
+            log.error("set_user_common__tt_Account fail,newAccount : {}",newTtAccount);
+            return userCommonResult;
+        }
+
         JsonResult recordResult = redisService.setKVWithExpire(com.lin.user.constant.Service.Service_Name, recordKey, "1", 15552000L, KeyType.Record_Int_type);
         if (!ConvertData.isResultIllegal(recordResult)){
             log.error("recordKey: {} set_user_detail_record_tt_Account fail,newAccount : {}",recordKey,newTtAccount);
@@ -236,7 +244,24 @@ public class UserDetailServiceImpl implements UserDetailService {
         return recordResult;
     }
 
-
+    private JsonResult setUserCommon(String uid,String newTtAccount) {
+        String key = generateKey(uid,com.lin.user.constant.Service.User_Common_Storage_Key);
+        UserCommon userCommon = null;
+        JsonResult jsonResult = redisService.getKV(com.lin.user.constant.Service.Service_Name, key, KeyType.Storage_Int_type);
+        try {
+            userCommon = (UserCommon) SerializeUtils.serializeToObject(jsonResult.getData());
+            userCommon.setTtAccount(newTtAccount);
+            JsonResult setUserCommon = redisService.setKVWithoutExpire(com.lin.user.constant.Service.Service_Name, key, SerializeUtils.serialize(userCommon), KeyType.Storage_Int_type);
+            if (!ConvertData.isResultIllegal(setUserCommon)){
+                return ResultTool.fail();
+            }
+            log.info("UserCommmon={}",userCommon);
+            return ResultTool.success();
+        }catch (Exception e){
+            log.error("UserCommon_unserialize_fail,uid={}",uid);
+            return ResultTool.fail();
+        }
+    }
 
 
     private UserDetail getUserDetail(String uid){
