@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
-    @Query("MATCH (u:Uovie) where u.uid=$uid RETURN u")
+    @Query("MATCH (u:User) where u.uid=$uid RETURN u")
     List<UserNode> findByTitle(@Param("uid") String uid);
 }

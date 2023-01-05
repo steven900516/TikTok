@@ -1,7 +1,6 @@
 package com.lin.social.entity.relation;
 
 
-import com.lin.social.entity.node.UserNode;
 import com.lin.social.entity.node.Video;
 import lombok.Builder;
 import lombok.Data;
@@ -11,23 +10,25 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 import org.springframework.data.neo4j.core.schema.TargetNode;
 
+import java.time.LocalDate;
+
 @RelationshipProperties
 @Data
 @Builder
-public class Follow {
+public class Publish {
     @Id
     @GeneratedValue
     private Long id;
 
     @TargetNode
-    private UserNode userNode;
+    private Video video;
 
     @CreatedDate
-    private Long followAt;
+    private LocalDate publishAt;
 
-    public Follow(Long id,UserNode userNode,Long followAt) {
-        this.id = null;
-        this.userNode = userNode;
-        this.followAt = null;
+    public Publish(Long id, Video video, LocalDate publishAt) {
+        this.id = id;
+        this.video = video;
+        this.publishAt = publishAt;
     }
 }
