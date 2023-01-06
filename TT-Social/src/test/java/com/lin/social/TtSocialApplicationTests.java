@@ -27,15 +27,15 @@ class TtSocialApplicationTests {
         UserNode favorite3 = new UserNode("321443","232323g4","林关注的人3","爸爸3");
 
 
-        userNode2.getFollowList().add(new Follow(null,favorite1,null));
-        userNode2.getFollowList().add(new Follow(null,favorite2,null));
+        userNode2.getFollowList().add(new Follow(favorite1));
+        userNode2.getFollowList().add(new Follow(favorite2));
 
-        favorite2.getFollowList().add(new Follow(null,favorite3,null));
+        favorite2.getFollowList().add(new Follow(favorite3));
 
 
         byte[] img = new byte[]{};
         Video video = new Video("21312", "424233", img, "第一个视频", "#旅游", false, "北京", 0, 0, 0, 0);
-        favorite1.getVideoList().add(new Publish(null,video,null));
+        favorite1.getVideoList().add(new Publish(video));
         userNodeRepository.save(userNode2);
         userNodeRepository.save(favorite1);
 
