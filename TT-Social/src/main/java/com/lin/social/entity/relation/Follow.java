@@ -9,6 +9,7 @@ import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 import org.springframework.data.neo4j.core.schema.TargetNode;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @RelationshipProperties
@@ -21,11 +22,11 @@ public class Follow {
     @TargetNode
     private UserNode userNode;
 
-    private LocalDate followAt;
+    private LocalDateTime followAt;
 
     public Follow(UserNode userNode) {
         this.userNode = userNode;
-        this.followAt = LocalDate.now();
+        this.followAt = LocalDateTime.now();
     }
 
 

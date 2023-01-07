@@ -11,6 +11,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +29,9 @@ public class UserNode {
     @Property("name")
     private String name;
 
-    @Property("ttAccount")
-    private String ttAccount;
 
-    @CreatedDate
-    private Long createAt;
+    @Property("createAt")
+    private LocalDateTime createAt;
 
 
     public UserNode() {
@@ -42,7 +41,7 @@ public class UserNode {
         this.uid = uid;
         this.did = did;
         this.name = name;
-        this.ttAccount = ttAccount;
+        this.createAt = LocalDateTime.now();
     }
 
     @Relationship(type = Neo4j.FOLLOW, direction = Relationship.Direction.OUTGOING)
