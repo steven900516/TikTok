@@ -48,7 +48,12 @@ public enum ResultCode {
 
 
     /* Redis错误 */
-    REDIS_TYPE_ERROR(40001,"redis请求类型type错误");
+    REDIS_TYPE_ERROR(40001,"redis请求类型type错误"),
+
+
+
+    /* Neo4j错误 */
+    GRAPH_NO_REIGIST(50001,"查询不到用户信息，请重新注册");
 
 
     private Integer code;

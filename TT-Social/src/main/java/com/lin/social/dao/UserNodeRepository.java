@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.ExistsQuery;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,4 +30,15 @@ public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
             "order by r.followAt desc " +
             "skip ($curPage - 1) * $limit limit $limit")
     List<UserAndRelation> listUserSubscribe(@Param("uid") String uid,@Param("curPage") int curPage,@Param("limit") int limit);
+
+
+    @Query("MATCH (:User{uid:$ownUID})-[r]-(:User{uid:$otherUID}) " +
+            "delete r")
+    void deleteFollowRelation(@Param("ownUID")String ownUID,@Param("otherUID")String otherUID);
+
+
+    @Async
+    @Query("MATCH (o:User{uid:$ownUID}),(y:User{uid:$otherUID}),p=(o)-[]-(y)" +
+            "RETURN count(p)")
+    Integer relationCountBetweenTwo(@Param("ownUID")String ownUID,@Param("otherUID")String otherUID);
 }

@@ -37,7 +37,7 @@ public class UserNode {
     public UserNode() {
     }
 
-    public UserNode(String uid, String did, String name, String ttAccount) {
+    public UserNode(String uid, String did, String name) {
         this.uid = uid;
         this.did = did;
         this.name = name;
