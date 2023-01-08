@@ -6,6 +6,7 @@ import com.lin.common.result.ResultTool;
 import com.lin.common.util.SerializeUtils;
 import com.lin.social.constant.Neo4j;
 import com.lin.social.entity.normal.UserAndRelation;
+import com.lin.social.entity.normal.UserRelationResult;
 import com.lin.social.entity.relation.Follow;
 import com.lin.social.interfaces.RedisService;
 import com.lin.social.service.SocialService;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.soap.Node;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.lin.user.util.Key.generateKey;
@@ -93,8 +95,16 @@ public class SocialServiceImpl implements SocialService {
             log.error("listUserFans_error",e);
             return ResultTool.fail();
         }
-        log.info("listUserFans_success,count={},fans={}",fans.size(),fans);
-        return ResultTool.success(fans);
+        List<UserRelationResult> res = new ArrayList<>();
+        for (UserAndRelation  fan: fans) {
+            boolean isFriend = isRelationFriend(userCommon.getUid(), fan.getUserInfo().getUid());
+            UserRelationResult ur = new UserRelationResult();
+            ur.setFriend(isFriend);
+            ur.setUserAndRelation(fan);
+            res.add(ur);
+        }
+        log.info("listUserFans_success,count={},res={}",res.size(),res);
+        return ResultTool.success(res);
     }
 
     @Override
@@ -106,8 +116,16 @@ public class SocialServiceImpl implements SocialService {
             log.error("listUserFans_error",e);
             return ResultTool.fail();
         }
-        log.info("listUserSubscribe_success,count={},subscriber={}",subscribers.size(),subscribers);
-        return ResultTool.success(subscribers);
+        List<UserRelationResult> res = new ArrayList<>();
+        for (UserAndRelation  fan: subscribers) {
+            boolean isFriend = isRelationFriend(userCommon.getUid(), fan.getUserInfo().getUid());
+            UserRelationResult ur = new UserRelationResult();
+            ur.setFriend(isFriend);
+            ur.setUserAndRelation(fan);
+            res.add(ur);
+        }
+        log.info("listUserSubscribe_success,count={},subscriber={}",res.size(),res);
+        return ResultTool.success(res);
     }
 
     @Override
