@@ -11,6 +11,7 @@ import com.lin.user.entity.User;
 import com.lin.user.entity.UserCommon;
 import com.lin.user.entity.UserDetail;
 import com.lin.user.interfaces.RedisService;
+import com.lin.user.interfaces.SocialService;
 import com.lin.user.service.UserCommonService;
 import com.lin.user.service.UserDetailService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,10 @@ public class UserCommonServiceImpl implements UserCommonService {
 
     @Autowired
     UserDetailService userDetailService;
+
+
+    @Autowired
+    SocialService socialService;
 
 
     @Override
@@ -77,6 +82,11 @@ public class UserCommonServiceImpl implements UserCommonService {
             return registJson;
         }
 
+        JsonResult graphResult = socialService.registUserNodeToGraph(userCommon);
+        if (!ConvertData.isResultIllegal(graphResult)){
+            log.error("regist_graph_node_fail: userCommon = {}",userCommon);
+            return graphResult;
+        }
 
         log.info("uid = {} regist success",uid);
         return ResultTool.success(userCommon);

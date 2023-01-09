@@ -6,6 +6,7 @@ import com.lin.social.entity.node.Video;
 import com.lin.social.entity.relation.Follow;
 import com.lin.social.entity.relation.Publish;
 import com.lin.social.service.SocialService;
+import com.lin.user.entity.UserCommon;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,11 +28,11 @@ class TtSocialApplicationTests {
 //        socialService.follow("9493","321443");
 //        socialService.follow("321443","9493");
 
-        System.out.println(socialService.isFriend("9493", "321443"));
-        System.out.println(socialService.isFriend("321443", "9493"));
-
-        System.out.println(socialService.isFriend("9493", "6464"));
-        System.out.println(socialService.isFriend("6464", "9493"));
+//        System.out.println(socialService.isFriend("9493", "321443"));
+//        System.out.println(socialService.isFriend("321443", "9493"));
+//
+//        System.out.println(socialService.isFriend("9493", "6464"));
+//        System.out.println(socialService.isFriend("6464", "9493"));
 //        userNodeRepository.deleteFollowRelation("9493","321443");
 //        userNodeRepository.deleteAll();
 //
@@ -83,6 +84,9 @@ class TtSocialApplicationTests {
 //
 //
 //        System.out.println(userNodeRepository.count());
+        UserCommon userCommon = new UserCommon();
+        userCommon.setUid("321443");
+        System.out.println(socialService.listUserFans(userCommon, 1, 3).getData());
     }
 
 }

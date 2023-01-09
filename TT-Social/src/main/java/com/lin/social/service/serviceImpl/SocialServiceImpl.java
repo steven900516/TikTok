@@ -82,7 +82,7 @@ public class SocialServiceImpl implements SocialService {
             log.error("updateUserNodeName_fail,userCommon={},newName={}",userCommon,newName,e);
             return ResultTool.fail();
         }
-
+        log.info("updateUserNodeName_success,userCommon={}",userCommon);
         return ResultTool.success();
     }
 
