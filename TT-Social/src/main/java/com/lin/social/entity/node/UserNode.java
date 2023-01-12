@@ -2,19 +2,19 @@ package com.lin.social.entity.node;
 
 
 import com.lin.social.constant.Neo4j;
-import com.lin.social.entity.normal.Video;
+import com.lin.social.entity.relation.Follow;
+import com.lin.social.entity.relation.Publish;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-
-import static org.springframework.data.neo4j.core.schema.Relationship.Direction.INCOMING;
 
 
 @Data
@@ -29,22 +29,24 @@ public class UserNode {
     @Property("name")
     private String name;
 
-    @Property("ttAccount")
-    private String ttAccount;
 
-    @Property("videoMap")
-    private HashMap<String,Video> videoMap;
-
-    @Relationship(type = Neo4j.FOLLOW, direction = Relationship.Direction.OUTGOING)
-    private List<UserNode> followList;
+    @Property("createAt")
+    private LocalDateTime createAt;
 
 
-    public UserNode addSubscribe(UserNode actor) {
-        if (this.followList == null) {
-            this.followList = new ArrayList<>();
-        }
-        this.followList.add(actor);
-        return this;
+    public UserNode() {
     }
 
+    public UserNode(String uid, String did, String name) {
+        this.uid = uid;
+        this.did = did;
+        this.name = name;
+        this.createAt = LocalDateTime.now();
+    }
+
+    @Relationship(type = Neo4j.FOLLOW, direction = Relationship.Direction.OUTGOING)
+    private List<Follow> followList = new ArrayList<>();
+
+    @Relationship(type = Neo4j.PBLISH, direction = Relationship.Direction.OUTGOING)
+    private List<Publish> videoList = new ArrayList<>();
 }

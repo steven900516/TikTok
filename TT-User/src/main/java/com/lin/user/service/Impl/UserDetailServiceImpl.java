@@ -13,8 +13,10 @@ import com.lin.user.entity.School;
 import com.lin.user.entity.UserCommon;
 import com.lin.user.entity.UserDetail;
 import com.lin.user.interfaces.RedisService;
+import com.lin.user.interfaces.SocialService;
 import com.lin.user.service.UserDetailService;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.pqc.crypto.ExchangePair;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,10 @@ public class UserDetailServiceImpl implements UserDetailService {
 
     @Autowired
     private RedisService redisService;
+
+
+    @Autowired
+    private SocialService socialService;
 
 
     @Override
@@ -92,6 +98,25 @@ public class UserDetailServiceImpl implements UserDetailService {
         if (!ConvertData.isResultIllegal(storageResult)){
             log.error("set_user_detail_storage_name fail,storageKey={},newName={}",storageKey,newName);
             return storageResult;
+        }
+
+        UserCommon userCommon = null;
+        String userCommonKey = generateKey(uid, com.lin.user.constant.Service.User_Common_Storage_Key);
+        JsonResult kv = redisService.getKV(com.lin.user.constant.Service.Service_Name, userCommonKey, KeyType.Storage_Int_type);
+        if (!ConvertData.isResultIllegal(kv)){
+            log.error("get_userCommon fail,userCommonKey={},newName={}",userCommonKey,newName);
+            return kv;
+        }
+        try {
+            userCommon = (UserCommon) SerializeUtils.serializeToObject(kv.getData());
+        }catch (Exception e){
+            log.error("userCommon unserialize fail",e);
+            return ResultTool.fail();
+        }
+        JsonResult graphResult = socialService.updateUserNodeName(userCommon, newName);
+        if (!ConvertData.isResultIllegal(graphResult)) {
+            log.error("neo4j_set_user_name fail");
+            return graphResult;
         }
         log.info("set_user_detail_name both success, storageKey={}, recordKey={}, newName={}",storageKey,recordKey, newName);
         return recordResult;

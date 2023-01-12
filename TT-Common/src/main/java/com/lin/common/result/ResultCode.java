@@ -46,9 +46,16 @@ public enum ResultCode {
 
     USER_DETAIL_IS_NULL(3003,"查找不到用户详情信息，请再试一遍"),
 
+    USER_COMMON_IS_NULL(3004,"用户无注册，请用户先行注册账号"),
+
 
     /* Redis错误 */
-    REDIS_TYPE_ERROR(40001,"redis请求类型type错误");
+    REDIS_TYPE_ERROR(40001,"redis请求类型type错误"),
+
+
+
+    /* Neo4j错误 */
+    GRAPH_NO_REIGIST(50001,"查询不到用户信息，请重新注册");
 
 
     private Integer code;
