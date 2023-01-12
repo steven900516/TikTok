@@ -7,6 +7,8 @@ import com.lin.common.result.ResultTool;
 import com.lin.common.util.ConvertData;
 import com.lin.common.util.SerializeUtils;
 import com.lin.storage.constant.KeyType;
+import com.lin.user.constant.Neo4j;
+import com.lin.user.entity.CountInfo;
 import com.lin.user.entity.UserCommon;
 import com.lin.user.interfaces.RedisService;
 import com.lin.user.interfaces.SocialService;
@@ -66,6 +68,23 @@ public class UserSocialServiceImpl implements UserSocialService {
         return socialService.isFriend(uid,otherUID);
     }
 
+    @Override
+    public JsonResult countInfo(String token, String uid, String did) {
+        String loveCountKey = generateKey(uid, Neo4j.Loves_Count_Totol);
+        CountInfo countInfo = null;
+        try {
+            Integer loveCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, loveCountKey, KeyType.Storage_Int_type).getData());
+            Integer friendCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, loveCountKey, KeyType.Storage_Int_type).getData());
+            Integer followCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, loveCountKey, KeyType.Storage_Int_type).getData());
+            Integer fansCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, loveCountKey, KeyType.Storage_Int_type).getData());
+            countInfo = new CountInfo(loveCount,friendCount,followCount,fansCount);
+        }catch (Exception e) {
+            log.error("countInfo_get_fail");
+            return ResultTool.success(new CountInfo());
+        }
+
+        return ResultTool.success(countInfo);
+    }
 
 
     public UserCommon getUserCommon(String uid){

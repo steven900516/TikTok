@@ -3,6 +3,8 @@ package com.lin.web.interfaces;
 
 import com.lin.common.result.JsonResult;
 import com.lin.user.entity.School;
+import com.lin.user.service.UserSocialService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,4 +61,37 @@ public interface UserService {
     @PostMapping("/tiktok/api/user/userDetail/setUserDetailTTAccount")
     public JsonResult setUserDetailTTAccount(@RequestParam("token")String token, @RequestParam("uid")String uid,
                                              @RequestParam("did")String did,@RequestParam("newTTAccount") String newTTAccount);
+
+
+
+    @PostMapping(value = "/tiktok/api/user/userSocial/listUserFans")
+    public JsonResult listUserFans(@RequestParam("token")String token, @RequestParam("uid")String uid,
+                                   @RequestParam("did")String did, @RequestParam("curPage")Integer curPage
+            ,@RequestParam("limit")Integer limit       );
+
+
+    @PostMapping(value = "/tiktok/api/user/userSocial/listUserSubscribe")
+    public JsonResult listUserSubscribe(@RequestParam("token")String token, @RequestParam("uid")String uid,
+                                        @RequestParam("did")String did, @RequestParam("curPage")Integer curPage
+            ,@RequestParam("limit")Integer limit );
+
+
+    @PostMapping(value = "/tiktok/api/user/userSocial/follow")
+    public JsonResult follow(@RequestParam("token")String token, @RequestParam("uid")String uid,
+                             @RequestParam("did")String did, @RequestParam("otherUID")String otherUID );
+
+    @PostMapping(value = "/tiktok/api/user/userSocial/cancleFollow")
+    public JsonResult cancleFollow(@RequestParam("token")String token, @RequestParam("uid")String uid,
+                                   @RequestParam("did")String did, @RequestParam("otherUID")String otherUID );
+
+
+    @PostMapping(value = "/tiktok/api/user/userSocial/isFriend")
+    public JsonResult isFriend(@RequestParam("token")String token, @RequestParam("uid")String uid,
+                               @RequestParam("did")String did,@RequestParam("otherUID")String otherUID);
+
+
+    @PostMapping(value = "/tiktok/api/user/userSocial/countInfo")
+    public JsonResult countInfo(@RequestParam("token")String token, @RequestParam("uid")String uid,
+                                @RequestParam("did")String did);
+
 }

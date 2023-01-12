@@ -1,4 +1,4 @@
-package com.lin.social.constant;
+package com.lin.user.constant;
 
 public class Neo4j {
 

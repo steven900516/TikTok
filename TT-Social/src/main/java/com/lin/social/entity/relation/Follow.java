@@ -3,10 +3,7 @@ package com.lin.social.entity.relation;
 
 import com.lin.social.entity.node.UserNode;
 import lombok.Data;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.RelationshipProperties;
-import org.springframework.data.neo4j.core.schema.TargetNode;
+import org.springframework.data.neo4j.core.schema.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +19,8 @@ public class Follow {
     @TargetNode
     private UserNode userNode;
 
+
+    @Property("followAt")
     private LocalDateTime followAt;
 
     public Follow(UserNode userNode) {

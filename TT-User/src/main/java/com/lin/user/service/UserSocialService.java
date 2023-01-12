@@ -18,4 +18,7 @@ public interface UserSocialService {
 
 
     JsonResult isFriend(String token,String uid,String did,String otherUID);
+
+
+    JsonResult countInfo(String token,String uid,String did);
 }
