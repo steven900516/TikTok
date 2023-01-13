@@ -134,7 +134,7 @@ public class SocialServiceImpl implements SocialService {
         if (userNodeRepository.relationCountBetweenTwo(ownUID, otherUID) == 1){
             JsonResult friendCount = redisService.getKV(Neo4j.Service_Name, ownUID + "-" + Neo4j.Friend_Count_Total, KeyType.Storage_Int_type);
             Integer friendInteger = Integer.parseInt((String)friendCount.getData());
-            redisService.setKVWithoutExpire(Neo4j.Service_Name,otherUID + "-" + Neo4j.Friend_Count_Total,friendInteger + 1,KeyType.Storage_Int_type);
+            redisService.setKVWithoutExpire(Neo4j.Service_Name,ownUID + "-" + Neo4j.Friend_Count_Total,friendInteger + 1,KeyType.Storage_Int_type);
 
             JsonResult otherFriendCount = redisService.getKV(Neo4j.Service_Name, otherUID + "-" + Neo4j.Friend_Count_Total, KeyType.Storage_Int_type);
             Integer otherFriendInteger = Integer.parseInt((String)otherFriendCount.getData());
@@ -175,7 +175,7 @@ public class SocialServiceImpl implements SocialService {
         if (isRelationFriend(ownUID, otherUID)){
             JsonResult friendCount = redisService.getKV(Neo4j.Service_Name, ownUID + "-" + Neo4j.Friend_Count_Total, KeyType.Storage_Int_type);
             Integer friendInteger = Integer.parseInt((String)friendCount.getData());
-            redisService.setKVWithoutExpire(Neo4j.Service_Name,otherUID + "-" + Neo4j.Friend_Count_Total,friendInteger - 1,KeyType.Storage_Int_type);
+            redisService.setKVWithoutExpire(Neo4j.Service_Name,ownUID + "-" + Neo4j.Friend_Count_Total,friendInteger - 1,KeyType.Storage_Int_type);
 
             JsonResult otherFriendCount = redisService.getKV(Neo4j.Service_Name, otherUID + "-" + Neo4j.Friend_Count_Total, KeyType.Storage_Int_type);
             Integer otherFriendInteger = Integer.parseInt((String)otherFriendCount.getData());
