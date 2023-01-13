@@ -1,6 +1,7 @@
 package com.lin.web.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.lin.common.result.JsonResult;
 import com.lin.web.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,9 @@ public class UserSocialController {
     public JsonResult setUserDetailSchool(@RequestHeader(required = false,value = "token")String token,
                                           @RequestHeader(required = true,value = "uid")String uid,
                                           @RequestHeader(required = false,value = "did")String did,
-                                          @RequestParam("curPage")Integer curPage
-                                        , @RequestParam("limit")Integer limit       ){
+                                          @RequestBody JSONObject body){
+        Integer curPage = body.getInteger("curPage");
+        Integer limit = body.getInteger("limit");
         return userService.listUserFans(token,uid,did,curPage,limit);
     }
 
@@ -26,8 +28,9 @@ public class UserSocialController {
     public JsonResult listUserSubscribe(@RequestHeader(required = false,value = "token")String token,
                                         @RequestHeader(required = true,value = "uid")String uid,
                                         @RequestHeader(required = false,value = "did")String did,
-                                        @RequestParam("curPage")Integer curPage
-                                         ,@RequestParam("limit")Integer limit ){
+                                        @RequestBody JSONObject body){
+        Integer curPage = body.getInteger("curPage");
+        Integer limit = body.getInteger("limit");
         return userService.listUserSubscribe(token,uid,did,curPage,limit);
     }
 
@@ -36,7 +39,8 @@ public class UserSocialController {
     public JsonResult follow(@RequestHeader(required = false,value = "token")String token,
                              @RequestHeader(required = true,value = "uid")String uid,
                              @RequestHeader(required = false,value = "did")String did,
-                             @RequestParam("otherUID")String otherUID ){
+                             @RequestBody JSONObject body){
+        String otherUID = body.getString("otherUID");
         return userService.follow(token,uid,did,otherUID);
     }
 
@@ -44,7 +48,8 @@ public class UserSocialController {
     public JsonResult cancleFollow(@RequestHeader(required = false,value = "token")String token,
                                    @RequestHeader(required = true,value = "uid")String uid,
                                    @RequestHeader(required = false,value = "did")String did,
-                                   @RequestParam("otherUID")String otherUID ){
+                                   @RequestBody JSONObject body){
+        String otherUID = body.getString("otherUID");
         return userService.cancleFollow(token,uid,did,otherUID);
     }
 
@@ -53,7 +58,8 @@ public class UserSocialController {
     public JsonResult isFriend(@RequestHeader(required = false,value = "token")String token,
                                @RequestHeader(required = true,value = "uid")String uid,
                                @RequestHeader(required = false,value = "did")String did,
-                               @RequestParam("otherUID")String otherUID){
+                               @RequestBody JSONObject body){
+        String otherUID = body.getString("otherUID");
         return userService.isFriend(token,uid,did,otherUID);
     }
 

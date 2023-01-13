@@ -34,6 +34,11 @@ class TtSocialApplicationTests {
 //        System.out.println(socialService.isFriend("9493", "6464"));
 //        System.out.println(socialService.isFriend("6464", "9493"));
         userNodeRepository.deleteAll();
+//        List<UserNode> ownNodeList = userNodeRepository.findUserByUid("109681295019440321");
+//        List<UserNode> otherNodeList = userNodeRepository.findUserByUid("109681289500129472");
+//        UserNode own = ownNodeList.get(0);
+//        UserNode other = otherNodeList.get(0);
+//        userNodeRepository.deleteFollowRelation("109681295019440321","109681289500129472");
 //
 //        UserNode userNode2 = new UserNode("424233","321","林的2号");
 //        UserNode favorite1 = new UserNode("123","232324","林关注的人1");

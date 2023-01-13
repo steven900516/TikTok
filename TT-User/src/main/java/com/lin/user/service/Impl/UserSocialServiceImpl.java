@@ -71,15 +71,18 @@ public class UserSocialServiceImpl implements UserSocialService {
     @Override
     public JsonResult countInfo(String token, String uid, String did) {
         String loveCountKey = generateKey(uid, Neo4j.Loves_Count_Totol);
+        String friendCountKey = generateKey(uid, Neo4j.Friend_Count_Total);
+        String followCountKey = generateKey(uid, Neo4j.Follow_Count_Total);
+        String fansCountKey = generateKey(uid, Neo4j.Fans_Count_Total);
         CountInfo countInfo = null;
         try {
             Integer loveCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, loveCountKey, KeyType.Storage_Int_type).getData());
-            Integer friendCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, loveCountKey, KeyType.Storage_Int_type).getData());
-            Integer followCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, loveCountKey, KeyType.Storage_Int_type).getData());
-            Integer fansCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, loveCountKey, KeyType.Storage_Int_type).getData());
+            Integer friendCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, friendCountKey, KeyType.Storage_Int_type).getData());
+            Integer followCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, followCountKey, KeyType.Storage_Int_type).getData());
+            Integer fansCount = Integer.parseInt((String)redisService.getKV(Neo4j.Service_Name, fansCountKey, KeyType.Storage_Int_type).getData());
             countInfo = new CountInfo(loveCount,friendCount,followCount,fansCount);
         }catch (Exception e) {
-            log.error("countInfo_get_fail");
+            log.error("countInfo_get_fail",e);
             return ResultTool.success(new CountInfo());
         }
 

@@ -130,6 +130,17 @@ public class SocialServiceImpl implements SocialService {
 
     @Override
     public JsonResult follow(String ownUID, String otherUID) {
+        // 若对方已关注自己
+        if (userNodeRepository.relationCountBetweenTwo(ownUID, otherUID) == 1){
+            JsonResult friendCount = redisService.getKV(Neo4j.Service_Name, ownUID + "-" + Neo4j.Friend_Count_Total, KeyType.Storage_Int_type);
+            Integer friendInteger = Integer.parseInt((String)friendCount.getData());
+            redisService.setKVWithoutExpire(Neo4j.Service_Name,otherUID + "-" + Neo4j.Friend_Count_Total,friendInteger + 1,KeyType.Storage_Int_type);
+
+            JsonResult otherFriendCount = redisService.getKV(Neo4j.Service_Name, otherUID + "-" + Neo4j.Friend_Count_Total, KeyType.Storage_Int_type);
+            Integer otherFriendInteger = Integer.parseInt((String)otherFriendCount.getData());
+            redisService.setKVWithoutExpire(Neo4j.Service_Name,otherUID + "-" + Neo4j.Friend_Count_Total,otherFriendInteger + 1,KeyType.Storage_Int_type);
+        }
+
         List<UserNode> ownNodeList = userNodeRepository.findUserByUid(ownUID);
         if (ownNodeList.size() != 1){
             log.error("follow_neo4j_not_regist_user_node,ownuid={},ownNodeList.size={}",ownUID,ownNodeList.size());
@@ -146,23 +157,14 @@ public class SocialServiceImpl implements SocialService {
         userNodeRepository.save(own);
 
         JsonResult followCount = redisService.getKV(Neo4j.Service_Name, ownUID + "-" + Neo4j.Follow_Count_Total, KeyType.Storage_Int_type);
-        Integer followInteger = (Integer)followCount.getData();
+        Integer followInteger = Integer.parseInt((String)followCount.getData());
         redisService.setKVWithoutExpire(Neo4j.Service_Name,ownUID + "-" + Neo4j.Follow_Count_Total,followInteger + 1,KeyType.Storage_Int_type);
 
         JsonResult fansCount = redisService.getKV(Neo4j.Service_Name, otherUID + "-" + Neo4j.Fans_Count_Total, KeyType.Storage_Int_type);
         Integer fansInteger = Integer.parseInt((String)fansCount.getData());
         redisService.setKVWithoutExpire(Neo4j.Service_Name,otherUID + "-" + Neo4j.Fans_Count_Total,fansInteger + 1,KeyType.Storage_Int_type);
 
-        // 若对方已关注自己
-        if (userNodeRepository.relationCountBetweenTwo(ownUID, otherUID) == 1){
-            JsonResult friendCount = redisService.getKV(Neo4j.Service_Name, ownUID + "-" + Neo4j.Friend_Count_Total, KeyType.Storage_Int_type);
-            Integer friendInteger = Integer.parseInt((String)friendCount.getData());
-            redisService.setKVWithoutExpire(Neo4j.Service_Name,otherUID + "-" + Neo4j.Friend_Count_Total,friendInteger + 1,KeyType.Storage_Int_type);
 
-            JsonResult otherFriendCount = redisService.getKV(Neo4j.Service_Name, otherUID + "-" + Neo4j.Friend_Count_Total, KeyType.Storage_Int_type);
-            Integer otherFriendInteger = Integer.parseInt((String)otherFriendCount.getData());
-            redisService.setKVWithoutExpire(Neo4j.Service_Name,otherUID + "-" + Neo4j.Friend_Count_Total,otherFriendInteger + 1,KeyType.Storage_Int_type);
-        }
 
         log.info("follow_success,{} 关注了: {}",own.getName(),other.getName());
         return ResultTool.success();
