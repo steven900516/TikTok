@@ -32,7 +32,7 @@ public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
     List<UserAndRelation> listUserSubscribe(@Param("uid") String uid,@Param("curPage") int curPage,@Param("limit") int limit);
 
 
-    @Query("MATCH (:User{uid:$ownUID})-[r]-(:User{uid:$otherUID}) " +
+    @Query("MATCH (:User{uid:$ownUID})-[r]->(:User{uid:$otherUID}) " +
             "delete r")
     void deleteFollowRelation(@Param("ownUID")String ownUID,@Param("otherUID")String otherUID);
 
